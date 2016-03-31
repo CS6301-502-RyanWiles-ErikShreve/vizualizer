@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Schema Viewer</title>
+	<link rel="stylesheet" type="text/css" href="css/analyzer.css"/>
+	<script src="./js/viz.js"></script>
+	<script src="./js/jquery-2.1.1.min.js"></script>
+	<script src="./js/dragscrollzoom.js"></script>
+	<script src="./js/jquery.mousewheel.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+
+	var dotFile = "Unset";
+
+	$(document).ready(function() {
+		$.get("graphFile.gv", function(response) {
+		     var dotFile = response;
+		     
+		     var format = "svg"; // dot, plain, svg, xdot
+		     var engine = "dot"; // dot, neato
+		     
+		     var result = Viz(dotFile, format, engine);
+		     
+		     //console.log(result);
+		     $("#imgDiv").html(result);
+
+		     initializeDragScrollZoom();
+		});
+
+		$('#scrollDiv').dragscrollzoom();
+	})
+	
+</script>
+<div id="scrollDiv" class="noborder" style="position: 'relative'; width: auto; height: 750px;">
+	<div id="imgDiv">
+	</div>
+</div>
+
+</body>
+</html>

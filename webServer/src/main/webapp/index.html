@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>System Analyzer</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<link rel="stylesheet" type="text/css" href="./css/analyzer.css">
+	<link rel="stylesheet" type="text/css" href="./css/jquery-ui-1.10.4.min.css">
+	<script src="./js/jquery-2.1.1.min.js"></script>
+	<script src="./js/jquery-ui-1.10.4.min.js"></script>
+	<script src="./js/analyzer.js"></script>
+	<script src="./js/viz.js"></script>
+	<script src="./js/dragscrollzoom.js"></script>
+	<script src="./js/jquery.mousewheel.js"></script>
+	<script src="./js/jquery.cookie.js"></script>
+	<script src="./js/jquery.collapsible.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		var dotFile = "Unset";
+
+		$(document).ready(function() {
+			analyzer = new analyzer();
+			analyzer.init();
+
+			$('#scrollDiv').dragscrollzoom();
+			
+		});
+	</script>
+
+	<div class="header">
+		<div class="headerMenu" id="mainMenu">
+			<img class="mainMenu" src="images/menu.png" />
+		</div>
+		<div class="headerTitle">System Analyzer</div>
+		<div class="headerHelp">?</div>
+	</div>
+	<div class="mainBody">
+ 	 	<div id="javaAnalyzer" class="sidebar">
+			<div class="collapsible" id="sourceDiv">Source<span></span></div>
+			<div class="container" id="sourceContainer">
+				<div class="content">
+					<div><div class="sourceLabel">Source Dir:</div><input id="sourceDir" type="text" placeholder="Path to your code" value=''/><button id="sourceScan">Scan</button></div>
+				</div>
+			</div>
+
+			<div class="collapsible" id="packagesDiv">Packages<span></span></div>
+			<div class="container" id="packagesContainer">
+				<div class="content">
+				</div>
+			</div>
+
+			<div class="collapsible" id="classesDiv">Classes<span></span></div>
+			<div class="container" id="classesContainer">
+				<div class="content">
+				</div>
+			</div>
+
+			<div class="collapsible" id="javaFilterDiv">Filter<span></span></div>
+			<div class="container" id="javaFilterContainer">
+				<div class="content">
+					<div><div class="filterLabel">Layout:</div><select id="javaLayout"></select></div>
+					<div><div class="filterLabel">Type:</div><select id="javaDiagramType"></select></div>
+					<div><div class="filterLabel">Show Fields:</div><input id="showFields" type="checkbox"/></div>
+					<div><div class="filterLabel">Show Methods:</div><input id="showMethods" type="checkbox" checked/></div>
+					<div><div class="filterLabel">From Scanned File:</div><input id="fromFile" type="checkbox" checked/></div>
+					<div><button id="javaRender">Render</button></div>
+				</div>
+			</div>
+	
+ 	 	</div>
+ 		<div id="scrollDiv">
+   			<div id="imgDiv">
+			</div>
+ 		</div>
+	</div>
+</body>
+</html>
