@@ -246,18 +246,106 @@ public class Project {
 
 	// public static final String[] excludePkgs = { "java.", "javax." };
 
+	private void unexcludeDependentClasses(HashSet<String> originalExcludedClasses, HashSet<String> unExcludedClasses, Class cls, int depth)
+	{
+		if (depth == 0)
+		{
+			return;
+		}
+		
+		for (String dependentClass : cls.classDependencies.keySet())
+		{
+			if (dependentClass.equals("AstVisitor"))
+			{
+				System.out.println("AstVisitor being unexcluded");
+				System.out.println(cls.getCanonicalName() + cls.getName());
+			}
+			
+			if (originalExcludedClasses.contains(cls.getCanonicalName()))
+			{
+				System.out.println("Unexcluding (dp): " + cls.getCanonicalName());
+
+				// Note, do not test to see if the class was already added
+				// as it may have been but at a further depth level. Thus,
+				// this time through additional dependencies could be added by the recursive call.
+				unExcludedClasses.add(cls.getCanonicalName());
+				unexcludeDependentClasses(originalExcludedClasses, unExcludedClasses, cls.classDependencies.get(dependentClass), depth -1);				
+			}
+		}
+	}
+	
+	private void unexcludeReferencedByClasses(HashSet<String> originalExcludedClasses, HashSet<String> unExcludedClasses, Class cls, int depth)
+	{
+		if (depth == 0)
+		{
+			return;
+		}
+		
+		for (Class referencedByClass : cls.referencedByClass)
+		{
+			if (originalExcludedClasses.contains(referencedByClass.getCanonicalName()))
+			{
+				System.out.println("Unexcluding (rb): " + referencedByClass.getCanonicalName());
+				// Note, do not test to see if the class was already added
+				// as it may have been but at a further depth level. Thus,
+				// this time through additional dependencies could be added by the recursive call.
+				unExcludedClasses.add(referencedByClass.getCanonicalName());
+				unexcludeReferencedByClasses(originalExcludedClasses, unExcludedClasses, referencedByClass, depth -1);				
+			}
+		}
+	}
+	
 	public String createGraph(JavaFilter filter) {
+
+		// Replace with test of filter for depth selection
+		if (1==1)
+		{
+			HashSet<String> excludedClasses = filter.getClassesToExclude();
+			HashSet<String> unExcludedClasses = new HashSet<String>();
+			for (String pkgName : packages.keySet()) 
+			{
+				Package pkg = packages.get(pkgName);
+
+				if (!filter.getPackagesToExclude().contains(pkg.name))
+				{
+					for (Class cls : pkg.classes.values())
+					{
+						if (!excludedClasses.contains(cls.getCanonicalName()))
+						{
+							System.out.println("Found nonexcluded class: " + cls.getCanonicalName());
+							unexcludeDependentClasses(excludedClasses, unExcludedClasses, cls, 3);
+							unexcludeReferencedByClasses(excludedClasses, unExcludedClasses, cls, 1);
+						}
+					}
+				}
+			}
+			
+
+			for (String name : unExcludedClasses)
+			{
+				if (excludedClasses.contains(name))
+				{
+					excludedClasses.remove(name);
+				}
+			}
+			filter.setClassesToExclude(excludedClasses);
+			
+		}
+
+		
+		
 		GraphvizRenderer renderer = new GraphvizDotRenderer();
 
 		StringBuffer sb = new StringBuffer();
 
 		sb.append(renderer.getHeader());
 
+		
 		for (String pkgName : packages.keySet()) {
 			Package pkg = packages.get(pkgName);
 			// if (pkg.inPath) {
-			boolean exclude = filter.getPackagesToExclude().contains(pkg.name);
-
+			boolean exclude = filter.getPackagesToExclude().contains(pkg.name);		
+			
 			if (!exclude) {
 				if ((filter.isFromFile() && pkg.fromFile) || !filter.isFromFile()) {
 					sb.append(pkg.createGraph(renderer, filter));
