@@ -4,6 +4,7 @@
 var fake = "";
 //fake = "Fake";
 
+var referenceChainDepths = [ 1, 2, 3, 4, 5, 6 ];
 var layouts = { 'dot' : 'Top Down', 'neato' : 'Natural' };
 var pkFilter = { 'All' : 'All', 'NoPK' : 'No PK', 'HasPK' : 'Has PK' };
 var fkFilter = { 'All' : 'All', 'NoFK' : 'No FK', 'HasFK' : 'Has FK' };
@@ -11,6 +12,25 @@ var javaDiagramType = { 'PACKAGE_DIAGRAM' : 'Package Diagram', 'CLASS_ASSOCIATIO
 
 function javaAnalyzerInit(menuItem) {
 
+	if (!$("#referenceChains").prop('checked')) {
+		$("#referenceChainDetails").hide();
+	}
+	
+	$.each(referenceChainDepths, function(index, value) {
+		$("#upstreamReferenceDepth").append("<option value='"+value+"'>"+value+"</option>");
+		$("#downstreamDependencyDepth").append("<option value='"+value+"'>"+value+"</option>");
+	});
+	
+	$("#referenceChains").change(function() {
+		if ($("#referenceChains").prop('checked')) {
+			$("#referenceChainDetails").show();
+		} else {
+			$("#referenceChainDetails").hide();
+			
+		}
+		
+	});
+	
 	$.each(layouts, function(value, label) {
 		$("#javaLayout").append("<option value='"+value+"'>"+label+"</option>");
 	});
@@ -65,8 +85,8 @@ function javaAnalyzerInit(menuItem) {
 				drawGraph();
 		    },
 		    error:function(res){
-		        alert("Bad thing happend! " + res.statusText);
-		        alert("Bad thing happend! " + res);
+		        alert("Bad things happend! " + res.statusText);
+		        alert("Bad things happend! " + res);
 		    }
 		});
 		
@@ -127,14 +147,24 @@ function javaAnalyzerInit(menuItem) {
 	function drawGraph() {
 		var uncheckedPackages = $.makeArray( $.map($(".packages"), function(i) { if (!$(i).prop('checked')) { return $(i).val(); } }) );
 		var uncheckedClasses = $.makeArray( $.map($(".classes"), function(i) { if (!$(i).prop('checked')) { return $(i).val(); } }) );
-
+		
+		var upstreamReferenceDepth = null;
+		var downstreamDependencyDepth = null;
+		
+		if ($("#referenceChains").prop('checked')) {
+			upstreamReferenceDepth = $("#upstreamReferenceDepth option:selected").val();
+			downstreamDependencyDepth = $("#downstreamDependencyDepth option:selected").val();
+		}
+		
 		filter = {
 			diagramType : $("#javaDiagramType option:selected").val(), // PACKAGE_DIAGRAM, CLASS_ASSOCIATION_DIAGRAM, METHOD_CALL_DIAGRAM
 			showFields : $("#showFields").prop('checked'), // boolean
 			showMethods : $("#showMethods").prop('checked'), //boolean
 			fromFile : $("#fromFile").prop('checked'), //boolean
 			packagesToExclude : uncheckedPackages, //["CREATED_BY", "UPDATED_BY"], // Set<String>
-			classesToExclude : uncheckedClasses // NoFK, HasFK, All
+			classesToExclude : uncheckedClasses, // NoFK, HasFK, All
+			upstreamReferenceDepth : upstreamReferenceDepth,
+			downstreamDependencyDepth : downstreamDependencyDepth
 		};
 		
 		$.ajax({
