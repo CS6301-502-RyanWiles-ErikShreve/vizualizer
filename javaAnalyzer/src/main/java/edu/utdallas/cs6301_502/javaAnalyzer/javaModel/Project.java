@@ -246,9 +246,9 @@ public class Project {
 
 	// public static final String[] excludePkgs = { "java.", "javax." };
 
-	private void unexcludeDependentClasses(HashSet<String> originalExcludedClasses, HashSet<String> unExcludedClasses, Class cls, int depth)
+	private void unexcludeDependentClasses(HashSet<String> originalExcludedClasses, HashSet<String> unExcludedClasses, Class cls, Integer depth)
 	{
-		if (depth == 0)
+		if (depth != null && depth == 0)
 		{
 			return;
 		}
@@ -274,9 +274,9 @@ public class Project {
 		}
 	}
 	
-	private void unexcludeReferencedByClasses(HashSet<String> originalExcludedClasses, HashSet<String> unExcludedClasses, Class cls, int depth)
+	private void unexcludeReferencedByClasses(HashSet<String> originalExcludedClasses, HashSet<String> unExcludedClasses, Class cls, Integer depth)
 	{
-		if (depth == 0)
+		if (depth != null && depth == 0)
 		{
 			return;
 		}
@@ -313,8 +313,8 @@ public class Project {
 						if (!excludedClasses.contains(cls.getCanonicalName()))
 						{
 							System.out.println("Found nonexcluded class: " + cls.getCanonicalName());
-							unexcludeDependentClasses(excludedClasses, unExcludedClasses, cls, 3);
-							unexcludeReferencedByClasses(excludedClasses, unExcludedClasses, cls, 1);
+							unexcludeDependentClasses(excludedClasses, unExcludedClasses, cls, filter.getDownstreamDependencyDepth());
+							unexcludeReferencedByClasses(excludedClasses, unExcludedClasses, cls, filter.getUpstreamReferenceDepth());
 						}
 					}
 				}
