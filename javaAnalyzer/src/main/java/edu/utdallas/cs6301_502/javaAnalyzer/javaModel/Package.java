@@ -1,6 +1,7 @@
 package edu.utdallas.cs6301_502.javaAnalyzer.javaModel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.utdallas.cs6301_502.javaAnalyzer.AstVisitor;
@@ -97,8 +98,6 @@ public class Package {
 		}
 	}
 
-	
-
 	// A value > 0xFF for any color means that 
 	// the value should not be used
 	private int mixColorToRGBValue(int red, int green, int blue)
@@ -124,7 +123,8 @@ public class Package {
 		return color;
 	}
 	
-	public String createGraph(GraphvizRenderer renderer, JavaFilter filter) {
+
+	public String createGraph(GraphvizRenderer renderer, JavaFilter filter, List<String> edgeList) {
 		AstVisitor.log(0, "Package: " + this.name);
 
 		int green = 0x100;
@@ -174,7 +174,7 @@ public class Package {
 			for (String pkgName : referencedPackages.keySet()) {
 				if (!filter.getPackagesToExclude().contains(pkgName)) {
 					Integer count = referencedPackages.get(pkgName);
-					sb.append(renderer.addEdge(this.name, pkgName, count.toString(), false));
+					edgeList.add((String) renderer.addEdge(this.name, pkgName, count.toString(), false));
 				}
 			}
 
@@ -189,7 +189,7 @@ public class Package {
 						System.err.println("!!!" + this.name + ": class with null name");
 					} else {
 						if (!filter.getClassesToExclude().contains(this.name + "." + clazz.name)) {
-							sb.append(clazz.createGraph(renderer, filter));
+							sb.append(clazz.createGraph(renderer, filter, edgeList));
 						}
 					}
 				}

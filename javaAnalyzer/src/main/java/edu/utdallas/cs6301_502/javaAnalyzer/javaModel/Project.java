@@ -14,6 +14,7 @@ import edu.utdallas.cs6301_502.javaAnalyzer.AstVisitor;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
+import com.github.javaparser.TokenMgrError;
 import com.github.javaparser.ast.CompilationUnit;
 
 import edu.utdallas.cs6301_502.javaAnalyzer.viewFilter.DiagramType;
@@ -89,6 +90,7 @@ public class Project {
 					AstVisitor.log(0, "");
 					AstVisitor.log(1, "Attempting to parse java file: " + f.getAbsolutePath());
 					CompilationUnit cu = JavaParser.parse(f);
+					
 					if (cu.getTypes() == null) {
 						AstVisitor.log(1, f.getAbsolutePath() + " has no classes");
 					} else {
@@ -97,9 +99,15 @@ public class Project {
 					}
 				}
 			} catch (ParseException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println("Unrecoverable ParseException when attempting to parse: " + f.getAbsolutePath());
+			} catch (RuntimeException ex) {
+				System.err.println("Unrecoverable RuntimeException when attempting to parse: " + f.getAbsolutePath());
+			} catch (Exception e) {
+				System.err.println("Unrecoverable Exception when attempting to parse: " + f.getAbsolutePath());
+			} catch (TokenMgrError e) {
+				System.err.println("Unrecoverable TokenMgrError when attempting to parse: " + f.getAbsolutePath());
+			} catch (StackOverflowError e) {
+				System.err.println("Unrecoverable StackOverflowError when attempting to parse: " + f.getAbsolutePath());
 			}
 		}
 		AstVisitor.log(0, "\n");
@@ -447,6 +455,8 @@ public class Project {
 
 		StringBuffer sb = new StringBuffer();
 
+		List<String> edgeList = new ArrayList<String>();
+		
 		sb.append(renderer.getHeader());
 
 		
@@ -457,11 +467,15 @@ public class Project {
 			
 			if (!exclude) {
 				if ((filter.isFromFile() && pkg.fromFile) || !filter.isFromFile()) {
-					sb.append(pkg.createGraph(renderer, filter));
+					sb.append(pkg.createGraph(renderer, filter, edgeList));
 				}
 			}
 		}
 
+		for (String edge : edgeList) {
+			sb.append(edge);
+		}
+		
 		sb.append(renderer.getFooter());
 
 		if (AstVisitor.DEBUGGING_ENABLED) {

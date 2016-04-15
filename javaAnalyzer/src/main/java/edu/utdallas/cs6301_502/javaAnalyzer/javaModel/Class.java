@@ -243,7 +243,8 @@ public class Class extends DependentBase implements Comparable<Class> {
 		return color;
 	}
 	
-	public String createGraph(GraphvizRenderer renderer, JavaFilter filter) {
+	public String createGraph(GraphvizRenderer renderer, JavaFilter filter, List<String> edgeList) {
+
 		AstVisitor.log(1, "Class: " + this.name);
 
 		HashSet<String> refsToSkip = new HashSet<String>();
@@ -300,7 +301,7 @@ public class Class extends DependentBase implements Comparable<Class> {
 					exclude = exclude || (filter.isFromFile() && !extnds.fromFile);
 
 				if (!exclude) {
-					sb.append(renderer.addEdge(this.getCanonicalName(),	extnds.getCanonicalName(), "", true));
+					edgeList.add((String) renderer.addEdge(this.getCanonicalName(),	extnds.getCanonicalName(), "", true));
 
 					Integer count = this.unresolvedClassCount.get(extnds.name);
 					if (count != null && count.intValue() == 1) {
@@ -318,7 +319,7 @@ public class Class extends DependentBase implements Comparable<Class> {
 					exclude = exclude || (filter.isFromFile() && !intr.fromFile);
 
 				if (!exclude) {
-					sb.append(renderer.addEdge(this.getCanonicalName(), intr.getCanonicalName(), "", true, false));
+					edgeList.add((String) renderer.addEdge(this.getCanonicalName(), intr.getCanonicalName(), "", true, false));
 
 					Integer count = this.unresolvedClassCount.get(intr.name);
 					if (count != null && count.intValue() == 1) {
@@ -335,7 +336,7 @@ public class Class extends DependentBase implements Comparable<Class> {
 						if ((filter.isFromFile() && clazz.fromFile)	|| !filter.isFromFile()) {
 							if ((filter.getDiagramType() == DiagramType.UNREFERENCED_CLASSES && clazz.referencedByClass.size() == 0)
 									|| filter.getDiagramType() != DiagramType.UNREFERENCED_CLASSES) {
-								sb.append(renderer.addEdge(this.getCanonicalName(), clazz.getCanonicalName(), ""));
+								edgeList.add((String) renderer.addEdge(this.getCanonicalName(), clazz.getCanonicalName(), ""));
 							}
 						}
 					}
