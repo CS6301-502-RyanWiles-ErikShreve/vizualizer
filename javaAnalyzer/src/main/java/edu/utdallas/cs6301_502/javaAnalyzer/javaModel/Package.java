@@ -2,6 +2,8 @@ package edu.utdallas.cs6301_502.javaAnalyzer.javaModel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
 import edu.utdallas.cs6301_502.javaAnalyzer.AstVisitor;
 
 import edu.utdallas.cs6301_502.javaAnalyzer.viewFilter.DiagramType;
