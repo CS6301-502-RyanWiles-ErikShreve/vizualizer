@@ -31,6 +31,24 @@ public @Data class JavaFilter {
 	boolean showMethods = false;
 	boolean showFields = false;
 	boolean fromFile = false;
+	Integer upstreamReferenceDepth = null;
+	Integer downstreamDependencyDepth = null;
+	
+	public Integer getUpstreamReferenceDepth() {
+		return upstreamReferenceDepth;
+	}
+
+	public void setUpstreamReferenceDepth(Integer upstreamReferenceDepth) {
+		this.upstreamReferenceDepth = upstreamReferenceDepth;
+	}
+
+	public Integer getDownstreamDependencyDepth() {
+		return downstreamDependencyDepth;
+	}
+
+	public void setDownstreamDependencyDepth(Integer downstreamDependencyDepth) {
+		this.downstreamDependencyDepth = downstreamDependencyDepth;
+	}
 
 	public DiagramType getDiagramType() {
 		return diagramType;
@@ -79,5 +97,5 @@ public @Data class JavaFilter {
 	public void setFromFile(boolean fromFile) {
 		this.fromFile = fromFile;
 	}
-
+	
 }
