@@ -10,6 +10,19 @@ var pkFilter = { 'All' : 'All', 'NoPK' : 'No PK', 'HasPK' : 'Has PK' };
 var fkFilter = { 'All' : 'All', 'NoFK' : 'No FK', 'HasFK' : 'Has FK' };
 var javaDiagramType = { 'PACKAGE_DIAGRAM' : 'Package Diagram', 'CLASS_ASSOCIATION_DIAGRAM' : 'Class Diagram', 'UNREFERENCED_CLASSES' : 'Unreferenced Classes' };
 
+$(document).ready(function() {
+    $(document)
+    .ajaxSend(function() {   
+        $('#loadingDiv').show();
+    })
+    .ajaxStop(function() {
+        $('#loadingDiv').hide();
+    })
+    .ajaxError(function() {
+        $('#loadingDiv').hide();
+    });
+});
+
 function javaAnalyzerInit(menuItem) {
 
 	if (!$("#referenceChains").prop('checked')) {
