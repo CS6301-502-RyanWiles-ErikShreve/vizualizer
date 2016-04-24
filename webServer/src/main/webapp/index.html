@@ -36,6 +36,7 @@
 		<div class="headerTitle">System Analyzer</div>
 		<div class="headerHelp">?</div>
 	</div>
+	<div class="loading" id="loadingDiv" style="display:none;"><img id="loadingImg" src="images/ajax-loader.gif" alt="Loading..."/></div>
 	<div class="mainBody">
  	 	<div id="javaAnalyzer" class="sidebar">
 			<div class="collapsible" id="sourceDiv">Source<span></span></div>
@@ -79,7 +80,7 @@
 							<div><div class="filterSubLabel">Downstream Dependency Depth:</div><select id="downstreamDependencyDepth"></select></div>
 						</div>
 					</div>
-					<div><button id="javaRender">Render</button><button id="saveToPng">Save As Image</button></div>
+					<div><button id="javaRender">Render</button><button id="saveToPng">Save As Image</button><a id="saveToGv" download="graph.gv"><button>Save As Graphviz</button></a></div>
 				</div>
 			</div>
 	

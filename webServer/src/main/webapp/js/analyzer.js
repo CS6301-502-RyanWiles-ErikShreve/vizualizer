@@ -10,6 +10,19 @@ var pkFilter = { 'All' : 'All', 'NoPK' : 'No PK', 'HasPK' : 'Has PK' };
 var fkFilter = { 'All' : 'All', 'NoFK' : 'No FK', 'HasFK' : 'Has FK' };
 var javaDiagramType = { 'PACKAGE_DIAGRAM' : 'Package Diagram', 'CLASS_ASSOCIATION_DIAGRAM' : 'Class Diagram', 'UNREFERENCED_CLASSES' : 'Unreferenced Classes' };
 
+$(document).ready(function() {
+    $(document)
+    .ajaxSend(function() {   
+        $('#loadingDiv').show();
+    })
+    .ajaxStop(function() {
+        $('#loadingDiv').hide();
+    })
+    .ajaxError(function() {
+        $('#loadingDiv').hide();
+    });
+});
+
 function javaAnalyzerInit(menuItem) {
 
 	if (!$("#referenceChains").prop('checked')) {
@@ -244,6 +257,8 @@ function javaAnalyzerInit(menuItem) {
 		drawGraph();
 	});
 		
+	var graphVizFile = null;	
+		
 	function drawGraph() {
 		var uncheckedPackages = $.makeArray( $.map($(".packages"), function(i) { if (!$(i).prop('checked')) { return $(i).val(); } }) );
 		var uncheckedClasses = $.makeArray( $.map($(".classes"), function(i) { if (!$(i).prop('checked')) { return $(i).val(); } }) );
@@ -281,6 +296,15 @@ function javaAnalyzerInit(menuItem) {
 			     var engine = $("#javaLayout option:selected").val(); // dot, neato
 			     
 			     var result = Viz(dotFile, format, engine);
+			     
+			     //  Make file that can be downloaded later.
+			     var data = new Blob([dotFile], {type: 'text/plain'});
+	    		 if (graphVizFile !== null) {
+      				window.URL.revokeObjectURL(graphVizFile);
+    			 }
+    			 graphVizFile = window.URL.createObjectURL(data);
+			     var link = document.getElementById('saveToGv');
+			     link.href = graphVizFile;
 			     
 			     //console.log(result);
 			     $("#imgDiv").html(result);
