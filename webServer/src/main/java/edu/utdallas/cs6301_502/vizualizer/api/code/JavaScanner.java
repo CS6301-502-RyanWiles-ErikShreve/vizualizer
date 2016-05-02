@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -177,11 +178,16 @@ public class JavaScanner {
 
 		boolean exists = file.exists();
 
+		Long start = System.nanoTime();
+		
 		if (exists) {
 			project.addFile(file);
 		} else {
 			response.setStatus(Response.Status.NOT_FOUND.ordinal());
 		}
+		Long end = System.nanoTime();
+		Duration time = Duration.ofNanos(end-start);
+		System.out.println("Time to parse all: " + time.toString());
 	}
 
 	@DELETE

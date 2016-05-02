@@ -252,8 +252,10 @@ function javaAnalyzerInit(menuItem) {
 	});
 		
 	var graphVizFile = null;	
+	var startRender = 0;
 		
 	function drawGraph() {
+		startRender = performance.now();
 		var uncheckedPackages = $.makeArray( $.map($(".packages"), function(i) { if (!$(i).prop('checked')) { return $(i).val(); } }) );
 		var uncheckedClasses = $.makeArray( $.map($(".classes"), function(i) { if (!$(i).prop('checked')) { return $(i).val(); } }) );
 		
@@ -303,6 +305,10 @@ function javaAnalyzerInit(menuItem) {
 			     $('svg').remove();
 			     $("#scrollDiv").after(result);
 			     initializeDragScrollZoom();
+			     
+			     var end = performance.now();
+				 console.log("Graphing duration: " + (end - startRender) + " ms");
+			     
 		    },
 		    error:function(res){
 		        alert("Bad thing happend! " + res.statusText);
